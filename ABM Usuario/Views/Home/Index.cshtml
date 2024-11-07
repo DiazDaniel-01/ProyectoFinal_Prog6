@@ -1,8 +1,83 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ABM_Usuario.Models.UsuarioModel>
+
+<h1>Lista de Usuarios</h1>
+
+@if (ViewBag.Mensaje != null)
+{
+    <div>@ViewBag.Mensaje</div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>IdUsuario</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.IdUsuario</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellido</td>
+                    <td>@usuario.Correo</td>
+                    <td>@usuario.Activo</td>
+                    <td>
+                        <form method="post" asp-action="EliminarUsuario" asp-route-IdUsuario="@usuario.IdUsuario">
+                            <button type="submit">Eliminar</button>
+                        </form>
+                        <form method="post" asp-action="ActualizarUsuario" asp-route-IdUsuario="@usuario.IdUsuario">
+                            <input type="hidden" name="IdUsuario" value="@usuario.IdUsuario" />
+                            <input type="text" name="Nombre" value="@usuario.Nombre" required />
+                            <input type="text" name="Apellido" value="@usuario.Apellido" required />
+                            <input type="email" name="Correo" value="@usuario.Correo" required />
+                            <input type="password" name="Contraseña" required />
+                            <input type="hidden" name="Activo" value="false" />
+                            <input type="checkbox" id="Activo_@usuario.IdUsuario" name="Activo" value="true" @(usuario.Activo ? "checked" : "") />
+                            <button type="submit">Actualizar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="6">No hay usuarios disponibles.</td></tr>
+        }
+    </tbody>
+</table>
+
+<!-- Formulario para agregar usuario -->
+<!-- Formulario para agregar usuario -->
+<h3>Agregar Usuario</h3>
+<form method="post" asp-action="AgregarUsuario">
+    <div>
+        <label for="Nombre">Nombre:</label>
+        <input type="text" id="Nombre" name="Nombre" required />
+    </div>
+    <div>
+        <label for="Apellido">Apellido:</label>
+        <input type="text" id="Apellido" name="Apellido" required />
+    </div>
+    <div>
+        <label for="Correo">Correo:</label>
+        <input type="email" id="Correo" name="Correo" required />
+    </div>
+    <div>
+        <label for="Contraseña">Contraseña:</label>
+        <input type="password" id="Contraseña" name="Contraseña" required />
+    </div>
+    <div>
+        <label for="Activo">Activo:</label>
+        <input type="hidden" name="Activo" value="false" />
+        <input type="checkbox" id="Activo" name="Activo" value="true" />
+    </div>
+    <button type="submit">Agregar</button>
+</form>

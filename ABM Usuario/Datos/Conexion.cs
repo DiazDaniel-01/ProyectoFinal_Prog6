@@ -1,20 +1,20 @@
-﻿using System.Data.SqlClient;
+﻿//using System.Data.SqlClient;
 
-namespace ABM_Usuario.Datos
-{
-    public class Conexion
-    {
-        private string cadenaSQL = string.Empty;
+//namespace ABM_Usuario.Datos
+//{
+//    public class Conexion
+//    {
+//        private string cadenaSQL = string.Empty;
 
-        public Conexion() {
+//        public Conexion() {
 
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+//            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
 
-            cadenaSQL = builder.GetSection("ConnectionStrings:CadenaSQL").Value;
-        }
-        public string getCadenaSQL() {
-            return cadenaSQL;
-        }
+//            cadenaSQL = builder.GetSection("ConnectionStrings:CadenaSQL").Value;
+//        }
+//        public string getCadenaSQL() {
+//            return cadenaSQL;
+//        }
 
-    }
-}
+//    }
+//}

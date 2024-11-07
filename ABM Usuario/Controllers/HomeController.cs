@@ -1,32 +1,88 @@
 ﻿using ABM_Usuario.Models;
+using ABM_Usuario.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ABM_Usuario.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly MyApiService _apiService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(MyApiService apiService)
         {
-            _logger = logger;
+            _apiService = apiService;
         }
 
-        public IActionResult Index()
+        // Mostrar lista de usuarios
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var usuarios = await _apiService.GetUsuariosAsync();
+            return View(usuarios);
         }
 
-        public IActionResult Privacy()
+        // Agregar usuario
+        [HttpPost]
+        public async Task<IActionResult> AgregarUsuario(UsuarioModel newUser)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                // Si el modelo no es válido, regresa a la vista con los errores
+                return View("Index", await _apiService.GetUsuariosAsync());
+            }
+
+            try
+            {
+                var mensaje = await _apiService.AgregarUsuarioAsync(newUser);
+                TempData["Mensaje"] = mensaje; // Usar TempData para mensajes
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error al agregar el usuario: {ex.Message}");
+                return View("Index", await _apiService.GetUsuariosAsync());
+            }
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        // Actualizar usuario
+        [HttpPost]
+        public async Task<IActionResult> ActualizarUsuario(int IdUsuario, UsuarioModel user)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (!ModelState.IsValid)
+            {
+                return View("Index", await _apiService.GetUsuariosAsync());
+            }
+
+            try
+            {
+                var mensaje = await _apiService.ActualizarUsuarioAsync(IdUsuario, user);
+                TempData["Mensaje"] = mensaje;
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error al actualizar el usuario: {ex.Message}");
+                return View("Index", await _apiService.GetUsuariosAsync());
+            }
+        }
+
+
+        // Eliminar usuario
+        [HttpPost]
+        public async Task<IActionResult> EliminarUsuario(int IdUsuario)
+        {
+            try
+            {
+                var mensaje = await _apiService.EliminarUsuarioAsync(IdUsuario);
+                TempData["Mensaje"] = mensaje;
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error al eliminar el usuario: {ex.Message}");
+                return View("Index", await _apiService.GetUsuariosAsync());
+            }
         }
     }
 }
