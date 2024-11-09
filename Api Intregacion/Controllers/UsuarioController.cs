@@ -125,7 +125,7 @@ namespace Api_Intregacion.Controllers
             }
         }
 
-        // PUT api/<UsuarioController>/5
+        // PUT api/<UsuarioController>/55
         [HttpPut("{IdUsuario}")]
         public IActionResult PutOrder(int IdUsuario, [FromBody] UsuarioModel user)
         {
@@ -144,7 +144,7 @@ namespace Api_Intregacion.Controllers
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // Asignar valores a los parámetros
+                    // Asignar valores a los parámetros.
                     command.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                     command.Parameters.AddWithValue("@Nombre", user.Nombre);
                     command.Parameters.AddWithValue("@Apellido", user.Apellido ?? (object)DBNull.Value);
